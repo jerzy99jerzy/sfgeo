@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+# Captures and memory images can hold addresses; they never belong here.
+*.pcap
+*.pcapng
+*.cap
+core
+core.*

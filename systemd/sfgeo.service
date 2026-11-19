@@ -1,0 +1,45 @@
+# /etc/systemd/system/sfgeo.service
+# Per-country counts of Snowflake proxy users from inbound ICE/STUN packets.
+# User addresses exist only in this process's RAM; output is one JSON line per
+# 15-minute window to journald. tcpdump needs CAP_NET_RAW only (-p: no
+# promiscuous mode, so no CAP_NET_ADMIN). LimitCORE=0: a crash must not write a
+# memory image with addresses to disk.
+# GeoIP data: /usr/share/tor/geoip extracted from tor-geoipdb with dpkg-deb,
+# because the package depends on tor and the tor daemon is not needed here.
+# The directives below are byte for byte the ones deployed with sfgeo 0.1.2.
+
+[Unit]
+Description=sfgeo - per-country Snowflake client counts (addresses stay in RAM)
+After=network-online.target time-sync.target snowflake-proxy.service
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python3 -I /usr/local/lib/sfgeo/sfgeo.py --geo /usr/local/share/sfgeo/geoip --iface eth0
+Restart=on-failure
+RestartSec=30
+Nice=10
+MemoryMax=64M
+LimitCORE=0
+UMask=0077
+DynamicUser=yes
+AmbientCapabilities=CAP_NET_RAW
+CapabilityBoundingSet=CAP_NET_RAW
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_PACKET AF_INET AF_UNIX AF_NETLINK
+
+[Install]
+WantedBy=multi-user.target

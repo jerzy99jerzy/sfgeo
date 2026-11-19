@@ -1,0 +1,11 @@
+# Test fixture in the format of Tor's geoip file: INTIPLOW,INTIPHIGH,CC, sorted.
+# The mapping is made up for the tests; it says nothing about where any range really is.
+# 91.0.0.0/8 has an empty country code on purpose: sfgeo reports it as "??".
+16777216,33554431,AU
+83886080,100663295,IR
+520093696,536870911,RU
+1291845632,1308622847,DE
+1526726656,1543503871,
+3221225984,3221226239,IR
+3325256704,3325256959,RU
+3405803776,3405804031,DE
